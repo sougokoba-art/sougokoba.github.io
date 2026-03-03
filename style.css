@@ -510,9 +510,6 @@ a {
     position: relative;
     overflow: hidden;
     width: 100%;
-    /* 右端にフェードアウト効果でスクロール可能を示唆 */
-    -webkit-mask-image: linear-gradient(to right, black 85%, transparent 100%);
-    mask-image: linear-gradient(to right, black 85%, transparent 100%);
 }
 
 .works-carousel-track {
@@ -785,4 +782,26 @@ a {
 
 .reveal.delay-3 {
     transition-delay: 0.3s;
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━
+   SUBTLE FOOTER
+   ━━━━━━━━━━━━━━━━━━━━━ */
+.subtle-footer {
+    margin-top: 8rem;
+    padding-bottom: 2rem;
+    text-align: center;
+}
+
+.subtle-footer a {
+    font-size: 0.65rem;
+    font-weight: 200;
+    color: rgba(255, 255, 255, 0.2);
+    letter-spacing: 0.1em;
+    font-family: var(--font-heading);
+    transition: color 0.4s ease;
+}
+
+.subtle-footer a:hover {
+    color: rgba(255, 255, 255, 0.6);
 }
