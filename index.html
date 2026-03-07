@@ -10,16 +10,28 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300&family=Noto+Sans+JP:wght@100;200;300&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600&family=Noto+Sans+JP:wght@100;200;300&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
 </head>
 
 <body>
     <!-- 粒状レイヤー（ザラッとしたテクスチャ） -->
     <div class="noise-overlay"></div>
 
-    <!-- 液体のようなアニメーション背景 -->
+    <!-- 背景画像用レイヤー -->
+    <div class="background-image-container"></div>
+
+    <!-- 空間を彩る背後のタイポグラフィ（パララックス / サブリミナル） -->
+    <div class="bg-deco-text" data-speed="0.1" style="top: 8%; left: -2%; opacity: 0.1; font-size: 12vw;">IKURA</div>
+    <div class="bg-deco-text" data-speed="0.2" style="top: 25%; right: -5%; opacity: 0.08; font-size: 10vw;">TABE</div>
+    <div class="bg-deco-text" data-speed="0.15" style="top: 45%; left: 15%; opacity: 0.12; font-size: 14vw;">TAI</div>
+    <div class="bg-deco-text" data-speed="0.08" style="top: 60%; right: 20%; opacity: 0.08; font-size: 8vw;">TO</div>
+    <div class="bg-deco-text" data-speed="0.25" style="top: 85%; left: -3%; opacity: 0.1; font-size: 12vw;">YAMA</div>
+    <div class="bg-deco-text" data-speed="0.12" style="top: 95%; right: 5%; opacity: 0.08; font-size: 10vw;">KEN</div>
+
+    <!-- 液体のようなアニメーション背景 (統合・演出として残す) -->
     <div class="background-canvas">
         <div class="liquid-blob blob-1"></div>
         <div class="liquid-blob blob-2"></div>
@@ -32,7 +44,7 @@
     <div class="app-wrapper">
 
         <!-- ナビゲーションメニュー -->
-        <nav class="glass-nav">
+        <nav class="glass-nav tilt-element">
             <h1 class="logo">Sougo Kobayashi</h1>
             <ul class="nav-links">
                 <li><a href="#about" class="active">About</a></li>
@@ -53,7 +65,9 @@
                     </div>
                     <div class="about-content">
                         <div class="about-profile">
-                            <img src="profile.JPG" alt="Sougo Kobayashi" class="profile-img">
+                            <div class="image-wrapper tilt-element">
+                                <img src="profile.JPG" alt="Sougo Kobayashi" class="profile-img">
+                            </div>
                             <div class="about-text">
                                 <h4 class="about-name">Sougo Kobayashi</h4>
                                 <p class="project-desc">
@@ -170,9 +184,9 @@
                                 </a>
                             </div>
                             <div class="series-title">TETSUGAKU TALK TO TALK</div>
-                            <div class="youtube-player-container glass-panel-simple">
+                            <div class="youtube-player-container glass-panel-simple tilt-element">
                                 <iframe
-                                    src="https://www.youtube.com/embed/jcHhhQnMu-I?rel=0&origin=http://localhost:3000"
+                                    src="https://www.youtube.com/embed/videoseries?list=PLsnYmzTqCO0pqRkkqGE6XwIgfJHgdS0nS&rel=0&origin=http://localhost:3000"
                                     title="YouTube video player" frameborder="0"
                                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                                     allowfullscreen></iframe>
@@ -194,7 +208,7 @@
                 <div class="works-carousel-track" id="worksCarouselTrack">
                     <!-- Slide 1 -->
                     <a href="https://linkco.re/veCTGDRe?lang=ja" target="_blank" rel="noopener noreferrer"
-                        class="work-card">
+                        class="work-card tilt-element">
                         <div class="work-image square">
                             <img src="Itadakimasu.JPG" alt="1st EP いただきます"
                                 style="width:100%; height:100%; object-fit:cover; opacity: 0.9;">
@@ -204,7 +218,7 @@
                     </a>
                     <!-- Slide 2 -->
                     <a href="https://linkco.re/9uGdMzu3?lang=ja" target="_blank" rel="noopener noreferrer"
-                        class="work-card">
+                        class="work-card tilt-element">
                         <div class="work-image square">
                             <img src="Itsudatsu.JPG" alt="Single 逸脱 その他の言語"
                                 style="width:100%; height:100%; object-fit:cover; opacity: 0.9;">
@@ -213,7 +227,8 @@
                         <p>Music / Artwork（2026）</p>
                     </a>
                     <!-- Slide 3 -->
-                    <a href="https://linkco.re/uU1XmCvf" target="_blank" rel="noopener noreferrer" class="work-card">
+                    <a href="https://linkco.re/uU1XmCvf" target="_blank" rel="noopener noreferrer"
+                        class="work-card tilt-element">
                         <div class="work-image square">
                             <img src="Threshold.JPG" alt="Threshold Track 8"
                                 style="width:100%; height:100%; object-fit:cover; opacity: 0.9;">
@@ -222,7 +237,7 @@
                         <p>Track 8「武市半平太」</p>
                     </a>
                     <!-- Slide 4: TraMul Design -->
-                    <a href="#" class="work-card" onclick="return false;">
+                    <a href="#" class="work-card tilt-element" onclick="return false;">
                         <div class="work-image contain-img" style="aspect-ratio: auto; min-height: 200px;">
                             <img src="TraMul.PNG" alt="TraMul Design"
                                 style="width:100%; height:100%; object-fit:contain; opacity: 0.9;">
@@ -251,7 +266,8 @@
             <div class="section-header">
                 <h3>Goods</h3>
             </div>
-            <a href="https://suzuri.jp/neu_nobita" target="_blank" rel="noopener noreferrer" class="goods-link-card">
+            <a href="https://suzuri.jp/neu_nobita" target="_blank" rel="noopener noreferrer"
+                class="goods-link-card tilt-element">
                 <div class="goods-link-info">
                     <h4>neu_nobita — SUZURI</h4>
                     <p>Original goods shop &nbsp;·&nbsp; suzuri.jp</p>
@@ -267,7 +283,6 @@
 
     </div><!-- /.app-wrapper -->
 
-    <script src="script.js"></script>
 </body>
 
 </html>
