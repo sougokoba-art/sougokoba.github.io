@@ -274,34 +274,68 @@ document.addEventListener('DOMContentLoaded', () => {
     // ----------------------------------------------------------------
     // 6. Ikura Splash Effect on Social Links (with delayed navigation)
     // ----------------------------------------------------------------
-    const spawnIkuraSplash = (centerX, centerY) => {
-        const numParticles = 16 + Math.floor(Math.random() * 8);
+    const spawnIkuraSplash = (centerX, centerY, isMassive = false) => {
+        const baseCount = isMassive ? 16 : 8;
+        const numParticles = baseCount + Math.floor(Math.random() * 8);
+        
+        const blobShapes = [
+            '40% 60% 70% 30% / 40% 50% 60% 50%',
+            '60% 40% 30% 70% / 50% 40% 60% 50%',
+            '50% 50% 50% 50% / 30% 30% 70% 70%',
+            '70% 30% 50% 50% / 30% 70% 50% 50%',
+            '30% 70% 70% 30% / 70% 30% 30% 70%',
+            '80% 20% 80% 20% / 20% 80% 20% 80%'
+        ];
+
         for (let i = 0; i < numParticles; i++) {
             const particle = document.createElement('div');
             particle.classList.add('ikura-particle');
-            particle.style.position = 'fixed';
             particle.style.left = `${centerX}px`;
             particle.style.top = `${centerY}px`;
 
-            let angle;
-            if (Math.random() > 0.5) {
-                angle = (Math.random() - 0.5) * 2.5;
-            } else {
-                angle = Math.PI + (Math.random() - 0.5) * 2.5;
-            }
-            const distance = 40 + Math.random() * 80;
+            // Random angle
+            const angle = isMassive
+                ? Math.random() * Math.PI * 2
+                : (Math.random() > 0.5 ? (Math.random() - 0.5) * 2.2 : Math.PI + (Math.random() - 0.5) * 2.2);
+
+            // Nonlinear distance
+            const distFactor = Math.pow(Math.random(), 1.5); 
+            const maxDist = isMassive ? 180 : 80;
+            const minDist = isMassive ? 20 : 15;
+            const distance = minDist + distFactor * (maxDist - minDist);
+
             const tx = Math.cos(angle) * distance;
             const ty = Math.sin(angle) * distance;
-            const size = 3 + Math.random() * 10;
+            
+            // Size variance
+            const sizeRandom = Math.random();
+            let w;
+            if (sizeRandom < 0.5) {
+                w = 2 + Math.random() * 3;
+            } else if (sizeRandom < 0.85) {
+                w = 5 + Math.random() * 6;
+            } else {
+                w = 12 + Math.random() * 12;
+            }
+            
+            const h = w * (0.8 + Math.random() * 0.6); // Non-uniform h/w
+            const angleDeg = Math.random() * 360; // Random initial rotation
+            const shape = blobShapes[Math.floor(Math.random() * blobShapes.length)];
 
-            particle.style.width = `${size}px`;
-            particle.style.height = `${size}px`;
+            particle.style.width = `${w}px`;
+            particle.style.height = `${h}px`;
             particle.style.setProperty('--tx', `${tx}px`);
             particle.style.setProperty('--ty', `${ty}px`);
-            particle.style.animationDelay = `${Math.random() * 0.05}s`;
+            particle.style.setProperty('--angle', `${angleDeg}deg`);
+            particle.style.setProperty('--blob-shape', shape);
+            
+            const delay = Math.random() * 0.1;
+            const duration = 0.5 + Math.random() * 0.4;
+            particle.style.setProperty('--duration', `${duration}s`);
+            particle.style.animationDelay = `${delay}s`;
 
             document.body.appendChild(particle);
-            setTimeout(() => particle.remove(), 1000);
+            setTimeout(() => particle.remove(), (delay + duration) * 1000 + 100);
         }
     };
 
@@ -312,9 +346,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const href = this.getAttribute('href');
             const isExternal = href && !href.startsWith('#');
 
-            // Always spawn splash
+            // Always spawn massive splash for direct link clicks
             const rect = this.getBoundingClientRect();
-            spawnIkuraSplash(rect.left + rect.width / 2, rect.top + rect.height / 2);
+            spawnIkuraSplash(rect.left + rect.width / 2, rect.top + rect.height / 2, true);
 
             // Delay external link navigation so effect plays out
             if (isExternal) {
@@ -339,8 +373,17 @@ document.addEventListener('DOMContentLoaded', () => {
             const centerX = rect.left + rect.width / 2;
             const centerY = rect.top + rect.height / 2;
 
-            // Burst more particles from card center
-            const numParticles = 20 + Math.floor(Math.random() * 8);
+            // Burst organic ink splats from card center
+            const numParticles = 30 + Math.floor(Math.random() * 20);
+            const blobShapes = [
+                '40% 60% 70% 30% / 40% 50% 60% 50%',
+                '60% 40% 30% 70% / 50% 40% 60% 50%',
+                '50% 50% 50% 50% / 30% 30% 70% 70%',
+                '70% 30% 50% 50% / 30% 70% 50% 50%',
+                '30% 70% 70% 30% / 70% 30% 30% 70%',
+                '80% 20% 80% 20% / 20% 80% 20% 80%'
+            ];
+
             for (let i = 0; i < numParticles; i++) {
                 const particle = document.createElement('div');
                 particle.classList.add('ikura-particle');
@@ -349,17 +392,36 @@ document.addEventListener('DOMContentLoaded', () => {
                 particle.style.top = `${centerY}px`;
 
                 const angle = Math.random() * Math.PI * 2;
-                const distance = 50 + Math.random() * 120;
-                particle.style.setProperty('--tx', `${Math.cos(angle) * distance}px`);
-                particle.style.setProperty('--ty', `${Math.sin(angle) * distance}px`);
+                const distFactor = Math.pow(Math.random(), 1.8);
+                const distance = 30 + distFactor * 250; 
+                
+                const tx = Math.cos(angle) * distance;
+                const ty = Math.sin(angle) * distance;
+                const angleDeg = Math.random() * 360;
 
-                const size = 4 + Math.random() * 12;
-                particle.style.width = `${size}px`;
-                particle.style.height = `${size}px`;
-                particle.style.animationDelay = `${Math.random() * 0.08}s`;
+                particle.style.setProperty('--tx', `${tx}px`);
+                particle.style.setProperty('--ty', `${ty}px`);
+                particle.style.setProperty('--angle', `${angleDeg}deg`);
+                const shape = blobShapes[Math.floor(Math.random() * blobShapes.length)];
+                particle.style.setProperty('--blob-shape', shape);
+
+                const sizeRandom = Math.random();
+                let w;
+                if (sizeRandom < 0.4) w = 2 + Math.random() * 3;
+                else if (sizeRandom < 0.8) w = 6 + Math.random() * 8;
+                else w = 15 + Math.random() * 20;
+
+                const h = w * (0.7 + Math.random() * 0.8);
+                particle.style.width = `${w}px`;
+                particle.style.height = `${h}px`;
+                
+                const delay = Math.random() * 0.15;
+                const duration = 0.6 + Math.random() * 0.5;
+                particle.style.setProperty('--duration', `${duration}s`);
+                particle.style.animationDelay = `${delay}s`;
 
                 document.body.appendChild(particle);
-                setTimeout(() => particle.remove(), 1100);
+                setTimeout(() => particle.remove(), (delay + duration) * 1000 + 100);
             }
 
             // Navigate after effect

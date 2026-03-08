@@ -566,36 +566,48 @@ a {
     transition: transform 0.05s ease-out;
 }
 
-/* Ikura Splash Effect Particles */
+/* Ikura Splash Effect Particles — organic shapes with ULTRA-GLOSSY ROE TEXTURE */
 .ikura-particle {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    border-radius: 50%;
-    /* Viscous juicy look */
-    background: radial-gradient(circle at 40% 40%, rgba(255, 200, 150, 0.9) 0%, rgba(255, 100, 0, 0.8) 50%, rgba(180, 40, 0, 0.6) 100%);
-    box-shadow: 0 0 6px rgba(255, 50, 0, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.5);
+    position: fixed;
+    border-radius: var(--blob-shape, 50%);
+    /* いびつな形状の中に、いくら特有の「表面のテカリ」と「内部の屈折」を多重グラデーションで表現 */
+    background: 
+        radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.9) 0%, transparent 25%), /* 表面のハイライト */
+        radial-gradient(circle at 40% 35%, rgba(255, 240, 150, 0.8) 0%, transparent 40%), /* 内部の輝き */
+        radial-gradient(circle at center, rgba(255, 110, 20, 0.95) 10%, rgba(180, 20, 0, 1) 100%); /* ベース色 */
+    
+    box-shadow: 
+        0 4px 12px rgba(255, 30, 0, 0.4), 
+        inset 0 2px 4px rgba(255, 255, 255, 0.7), /* 縁の反射光 */
+        inset 0 -3px 6px rgba(0, 0, 0, 0.3);      /* 底部の深み */
+    
     pointer-events: none;
-    transform: translate(-50%, -50%);
-    animation: ikuraSplash 0.7s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
-    z-index: 100;
+    transform-origin: center center;
+    filter: contrast(1.1) brightness(1.15) saturate(1.2); /* 彩度とコントラストを上げてシズル感を強調 */
+    animation: ikuraOrganicPop var(--duration, 0.7s) cubic-bezier(0.15, 0.85, 0.35, 1) forwards;
+    z-index: 9999;
+    will-change: transform, opacity;
 }
 
-@keyframes ikuraSplash {
+@keyframes ikuraOrganicPop {
     0% {
-        transform: translate(-50%, -50%) scale(0.2);
+        transform: translate(-50%, -50%) rotate(var(--angle, 0deg)) scale(0);
         opacity: 0;
     }
-
     15% {
         opacity: 1;
-        transform: translate(-50%, -50%) scale(1.2);
-        /* Initial burst enlargement */
+        /* 最初はパッと広がる */
+        transform: translate(-50%, -50%) rotate(var(--angle, 0deg)) scale(1.2);
     }
-
+    40% {
+        /* 飛びながら少し変形する（粘り気） */
+        transform: translate(calc(-50% + var(--tx) * 0.5), calc(-50% + var(--ty) * 0.5))
+                   rotate(var(--angle, 0deg)) scaleX(0.9) scaleY(1.1);
+    }
     100% {
-        /* Final position includes tx/ty plus a downward gravity pull */
-        transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty) + 40px)) scale(0);
+        /* 最後は飛んでいきながら細くなって消える */
+        transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty)))
+                   rotate(var(--angle, 0deg)) scale(0);
         opacity: 0;
     }
 }
@@ -748,6 +760,9 @@ a {
     position: relative;
     overflow: hidden;
     width: 100%;
+    padding-top: 20px;
+    padding-bottom: 30px;
+    margin-top: -20px;
 }
 
 .works-carousel-track {
@@ -820,8 +835,8 @@ a {
 }
 
 .work-card:hover .work-image {
-    border-color: rgba(255, 255, 255, 0.2);
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.7), 0 0 20px rgba(180, 100, 255, 0.08);
+    border-color: rgba(255, 130, 80, 0.5);
+    box-shadow: 0 15px 45px rgba(0, 0, 0, 0.6), 0 0 40px rgba(255, 80, 20, 0.3), inset 0 0 20px rgba(255, 150, 50, 0.2);
 }
 
 .work-image::after {
