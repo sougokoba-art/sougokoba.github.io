@@ -89,6 +89,18 @@ body {
     backdrop-filter: brightness(0.9) contrast(1.05);
 }
 
+/* Floating Roe Particles in Background */
+.roe-float {
+    position: fixed;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, rgba(255, 255, 255, 0.6) 0%, rgba(255, 140, 50, 0.4) 40%, rgba(200, 20, 0, 0.4) 100%);
+    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.3), 0 2px 5px rgba(0, 0, 0, 0.1);
+    pointer-events: none;
+    z-index: -1;
+    filter: blur(0.5px);
+    transition: transform 0.1s ease-out;
+}
+
 h1,
 h2,
 h3,
@@ -315,6 +327,28 @@ a {
     text-transform: uppercase;
     letter-spacing: 0.15em;
     position: relative;
+    padding: 0.2rem 0;
+}
+
+.nav-links a::before {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    width: 0;
+    height: 5px;
+    background: radial-gradient(circle at 30% 30%, #fff, #ff8c32 40%, #c81400 100%);
+    border-radius: 50% 50% 40% 40% / 60% 60% 40% 40%;
+    transform: translateX(-50%) scale(0);
+    transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    opacity: 0;
+    box-shadow: 0 0 12px rgba(255, 60, 0, 0.6);
+}
+
+.nav-links a.active::before {
+    width: 14px;
+    opacity: 1;
+    transform: translateX(-50%) scale(1);
 }
 
 .nav-links a:hover,
@@ -988,14 +1022,14 @@ a {
    ━━━━━━━━━━━━━━━━━━━━━ */
 .reveal {
     opacity: 0;
-    transform: translateY(30px);
-    transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+    transform: translateY(40px) scale(0.96);
+    transition: opacity 1s ease, transform 1s cubic-bezier(0.175, 0.885, 0.32, 1.15);
     will-change: transform, opacity;
 }
 
 .reveal.active {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
 }
 
 /* Staggered delay for child elements if needed */

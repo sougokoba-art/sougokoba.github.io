@@ -42,30 +42,61 @@ document.addEventListener('DOMContentLoaded', () => {
     const bgContainer = document.querySelector('.background-image-container');
     const root = document.documentElement;
 
+    // Create Background Roe Particles
+    const createRoeParticles = () => {
+        const count = 12;
+        const container = document.body;
+        for (let i = 0; i < count; i++) {
+            const particle = document.createElement('div');
+            particle.classList.add('roe-float');
+            const size = 6 + Math.random() * 8;
+            particle.style.width = `${size}px`;
+            particle.style.height = `${size}px`;
+            particle.style.left = `${Math.random() * 100}vw`;
+            particle.style.top = `${Math.random() * 100}vh`;
+            particle.style.opacity = 0.1 + Math.random() * 0.3;
+            // Variable speed for parallax
+            particle.dataset.depth = 0.05 + Math.random() * 0.15;
+            container.appendChild(particle);
+        }
+    };
+    createRoeParticles();
+
+    const roeParticles = document.querySelectorAll('.roe-float');
     let ticking = false;
+    let mouseX = 0;
+    let mouseY = 0;
+
+    window.addEventListener('mousemove', (e) => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+    });
 
     window.addEventListener('scroll', () => {
         if (!ticking) {
             window.requestAnimationFrame(() => {
                 const scrollY = window.scrollY;
 
-                // Parallax for Background Decorative Text (Magazine-style)
+                // Parallax for Background Decorative Text
                 decorativeTexts.forEach(text => {
                     const speed = parseFloat(text.getAttribute('data-speed')) || 0.1;
                     const yPos = -(scrollY * speed);
                     text.style.transform = `translateY(${yPos}px)`;
                 });
 
-                // Subtle background image parallax for depth
-                // Move bg down slightly as we scroll down
+                // Parallax for Roe Particles
+                roeParticles.forEach(p => {
+                    const depth = parseFloat(p.dataset.depth);
+                    const moveX = (mouseX - window.innerWidth / 2) * depth * 0.5;
+                    const moveY = (mouseY - window.innerHeight / 2) * depth * 0.5 + (scrollY * depth);
+                    p.style.transform = `translate(${moveX}px, ${moveY}px)`;
+                });
+
                 if (bgContainer) {
                     bgContainer.style.backgroundPositionY = `calc(50% + ${scrollY * 0.05}px)`;
                 }
 
-                // Dynamic Refraction (レンズ効果の変化)
-                // As we scroll faster/further, increase contrast/saturate to simulate passing through thick glass
-                // Just a subtle hint of dynamic change is usually enough
-                const dynamicSaturate = 180 + Math.min(scrollY / 10, 50); // Base 180, up to 230
+                const dynamicSaturate = 180 + Math.min(scrollY / 10, 50);
                 root.style.setProperty('--dynamic-saturate', `${dynamicSaturate}%`);
 
                 ticking = false;
@@ -219,6 +250,16 @@ document.addEventListener('DOMContentLoaded', () => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 entry.target.classList.add('active');
+
+                // Trigger a subtle 'pop' splash when a section enters
+                const rect = entry.target.getBoundingClientRect();
+                const splashX = rect.left + Math.random() * rect.width;
+                const splashY = rect.top + 20; // Near the top edge
+
+                if (typeof spawnIkuraSplash === 'function') {
+                    spawnIkuraSplash(splashX, splashY);
+                }
+
                 // Once revealed, no need to observe anymore
                 revealObserver.unobserve(entry.target);
             }
