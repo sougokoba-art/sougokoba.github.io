@@ -1,5 +1,16 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Hide loader after page load
+    window.addEventListener('load', () => {
+        const loader = document.getElementById('loader');
+        if (loader) {
+            setTimeout(() => {
+                loader.classList.add('hidden');
+            }, 500); // 0.5s pause for aesthetics
+        }
+    });
+
     // ----------------------------------------------------------------
+
     // 1. 3D Tilt Effect for Glass Elements (Physicality)
     // ----------------------------------------------------------------
     const tiltElements = document.querySelectorAll('.tilt-element');
@@ -84,12 +95,35 @@ document.addEventListener('DOMContentLoaded', () => {
                     text.style.transform = `translateY(${yPos}px)`;
                 });
 
-                // Parallax for Roe Particles
+                // Parallax & Fleeing for Roe Particles
                 roeParticles.forEach(p => {
                     const depth = parseFloat(p.dataset.depth);
-                    const moveX = (mouseX - window.innerWidth / 2) * depth * 0.5;
-                    const moveY = (mouseY - window.innerHeight / 2) * depth * 0.5 + (scrollY * depth);
-                    p.style.transform = `translate(${moveX}px, ${moveY}px)`;
+                    
+                    // Base parallax position
+                    const parallaxX = (mouseX - window.innerWidth / 2) * depth * 0.5;
+                    const parallaxY = (mouseY - window.innerHeight / 2) * depth * 0.5 + (scrollY * depth);
+                    
+                    // Fleeing logic (Physical Interaction)
+                    const pRect = p.getBoundingClientRect();
+                    const pCenterX = pRect.left + pRect.width / 2;
+                    const pCenterY = pRect.top + pRect.height / 2;
+                    
+                    const dx = mouseX - pCenterX;
+                    const dy = mouseY - pCenterY;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    const forceRadius = 180; // React radius
+                    
+                    let fleeX = 0;
+                    let fleeY = 0;
+                    
+                    if (dist < forceRadius) {
+                        const angle = Math.atan2(dy, dx);
+                        const force = (forceRadius - dist) / forceRadius;
+                        fleeX = -Math.cos(angle) * force * 50; // Max 50px flee
+                        fleeY = -Math.sin(angle) * force * 50;
+                    }
+                    
+                    p.style.transform = `translate(${parallaxX + fleeX}px, ${parallaxY + fleeY}px)`;
                 });
 
                 if (bgContainer) {
